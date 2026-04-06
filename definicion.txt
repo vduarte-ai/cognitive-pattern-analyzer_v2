@@ -1,0 +1,16 @@
+#CLASIFICADOR: 
+Es un modelo que asigna una categoría a una entrada basándose en patrones
+
+# ML : el modelo aprende patrones 
+
+# FEATURES
+El sistema real detecta:
+- absolute language ("Always, "never")
+- emotional intensity
+- self reference
+
+
+
+# PIPELINE Completo
+
+texto -> Features / embeddings -> modelo (clasificador) -> prediccion

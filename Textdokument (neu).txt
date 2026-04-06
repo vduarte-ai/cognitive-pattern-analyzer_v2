@@ -1,0 +1,5 @@
+Mi sistema:
+1. Recibe texto del usuario
+2. Lo convierte en números
+3. Clasifica
+4. Devuelve resultado
