@@ -1,15 +1,22 @@
 # 🧠 Cognitive Pattern Analyzer
 
-A machine learning-powered web application that detects cognitive distortions in user input text.
+AI-powered NLP application that detects cognitive distortions from user thoughts using Machine Learning and semantic embeddings.
 
+Built with FastAPI, Streamlit, Sentence Transformers, and Scikit-learn.
+
+![App Screenshot](assets/app_preview.png)
 ---
 
-## 🚀 Features
+## ✨ Features
 
-* Detects cognitive distortions (e.g., catastrophizing, overgeneralization)
-* REST API built with FastAPI
-* Interactive UI built with Streamlit
-* ML model using sentence embeddings
+- Detects cognitive distortions from text
+- Semantic embeddings using Sentence Transformers
+- FastAPI backend architecture
+- Interactive Streamlit frontend
+- Confidence score visualization
+- REST API integration
+- Real-time prediction pipeline
+- Structured logging and error handling
 
 ---
 
@@ -28,6 +35,7 @@ app/
   ├── schemas.py     # Request/response models
   ├── services.py    # Business logic
   └── app_ui.py      # Streamlit UI
+  └── logger.py      
 
 model/
   ├── loader.py      # Loads ML pipeline
@@ -35,6 +43,19 @@ model/
 
 notebooks/
   └── training.ipynb
+
+data/
+
+# 🔥 HOW TO RUN
+
+```md id="65"
+## 🚀 Run Locally
+
+### 1. Clone repository
+
+```bash
+git clone <repo_url>
+cd Cognitive-Pattern-Analyzer_v2
 
 ---
 
@@ -62,6 +83,22 @@ streamlit run app/app_ui.py
 
 ---
 
+# 🔥 API EXAMPLE
+
+```md id="66"
+## 🔌 API Example
+
+POST `/predict`
+
+Request:
+
+```json
+{
+  "text": "I ruin everything"
+}
+
+---
+
 ## 📡 API Endpoint
 
 POST `/predict`
@@ -76,24 +113,48 @@ Response:
 
 ```json
 {
+  "success": true,
   "prediction": "catastrophizing",
-  "confidence": 0.87
+  "confidence": 0.488
 }
 ```
 
 ---
 
-## 🧠 Tech Stack
+## 🛠️ Tech Stack
 
-* Python
-* FastAPI
-* Streamlit
-* Scikit-learn
-* Sentence Transformers
+### Frontend
+- Streamlit
+
+### Backend
+- FastAPI
+- Uvicorn
+- Pydantic
+
+### Machine Learning
+- Sentence Transformers
+- Scikit-learn
+- PyTorch
+
+### Utilities
+- NumPy
+- Pandas
+- Logging
 
 ---
 
-## 📌 Future Improvements
+# 🔥 FUTURE IMPROVEMENTS
+
+```md id="67"
+## 🚧 Future Improvements
+
+- Docker support
+- CI/CD pipeline
+- Render deployment
+- Model explainability
+- Authentication
+- Dashboard analytics
+- Advanced NLP models
 
 * Model explainability
 * Multi-language support
@@ -101,6 +162,18 @@ Response:
 * Deployment (cloud)
 
 ---
+
+## 🧠 Skills Demonstrated
+
+- NLP Engineering
+- REST API Development
+- Frontend/Backend Integration
+- Machine Learning Inference
+- Semantic Embeddings
+- FastAPI Architecture
+- Streamlit UI Development
+- Error Handling & Logging
+- Modular Software Design
 
 ## 👩‍💻 Author
 

@@ -19,6 +19,7 @@ def predict(request: TextInput):
         text = request.text
 
         if not text or len(text.strip()) == 0 :
+            
             raise HTTPException(status_code=400, detail="Text cannot be empty")
 
         # 1. Convertir texto -> embedding 
@@ -44,10 +45,16 @@ def predict(request: TextInput):
         logger.info(f"Prediction: {label}")       
 
         return {
+            "success": True,
             "prediction": label,
             "confidence": round(confidence, 3),
             "all_probabilities": all_probs
-        }
-
+         }
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Prediction error: {str(e)}")
+
+    raise HTTPException(
+        status_code=500,
+        detail="Internal prediction error"
+    )

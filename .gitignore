@@ -17,3 +17,5 @@ ai_env/
 
 # OS
 .DS_Store
+
+*.log
