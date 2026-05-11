@@ -8,7 +8,6 @@ ai_env/
 .env
 
 # modelos pesados
-*.pkl
 *.pt
 *.bin
 
