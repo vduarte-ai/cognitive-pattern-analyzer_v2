@@ -50,6 +50,9 @@ if st.button("Analyze"):
 
                 else:
                     st.error("Prediction failed.")
+                    
+                    st.write("STATUS:", response.status_code)
+                    st.write("RESPONSE:", response.text)
 
             except Exception as e:
                 st.exception(e)
