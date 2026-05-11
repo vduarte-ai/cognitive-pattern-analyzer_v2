@@ -1,14 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 from app.schemas import TextInput, PredictionOutput
-from model.loader import classifier, embedding_model, label_encoder
 from app.logger import logger
 from app.services import analyze_text
 
 router = APIRouter()
-
-class TextRequest(BaseModel):
-    text: str
 
 @router.get("/")
 def health():
@@ -61,7 +56,7 @@ def predict(request: TextInput):
         #    for label, prob in zip(labels, probs)
         #}
 
-        l#ogger.info(f"Incoming text: {text}")
+        #logger.info(f"Incoming text: {text}")
         #logger.info(f"Prediction: {label}")       
 
         #return {

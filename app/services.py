@@ -1,13 +1,35 @@
-from app.routes import (
-    embedding_model,
-    classifier,
-    label_encoder
-)
+from sentence_transformers import SentenceTransformer
+import joblib
 
 from app.logger import logger
 
 
+embedding_model = None
+classifier = None
+label_encoder = None
+
+
+def load_models():
+    global embedding_model
+    global classifier
+    global label_encoder
+
+    if embedding_model is None:
+        logger.info("Loading embedding model...")
+        embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    if classifier is None:
+        logger.info("Loading classifier...")
+        classifier = joblib.load("model/classifier.pkl")
+
+    if label_encoder is None:
+        logger.info("Loading label encoder...")
+        label_encoder = joblib.load("model/label_encoder.pkl")
+
+
 def analyze_text(text: str):
+
+    load_models()
 
     embedding = embedding_model.encode([text])
 
