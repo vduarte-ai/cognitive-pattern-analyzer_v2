@@ -1,4 +1,3 @@
-from sentence_transformers import SentenceTransformer
 import joblib
 
 from app.logger import logger
@@ -16,7 +15,7 @@ def load_models():
 
     if embedding_model is None:
         logger.info("Loading embedding model...")
-        embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        embedding_model = joblib.load("model/embedding_model.pkl")
 
     if classifier is None:
         logger.info("Loading classifier...")
