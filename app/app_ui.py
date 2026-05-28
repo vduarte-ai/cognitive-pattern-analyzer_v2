@@ -23,7 +23,7 @@ password = st.text_input(
 
 if st.button("Login"):
     response = requests.post(
-        "http://127.0.0.1:8000/login",
+        "https://cognitive-pattern-analyzer-v2.onrender.com/login",
         json={
             "email": email,
             "password": password
@@ -96,7 +96,7 @@ if st.button("Analyze"):
             try:
 
                 response = requests.post(
-                    "http://127.0.0.1:8000/predict",
+                    "https://cognitive-pattern-analyzer-v2.onrender.com/predict",
                     json={"text": text},
                     headers={
                         "Authorization":
