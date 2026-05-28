@@ -1,16 +1,47 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import HTTPBearer
+
 from app.schemas import TextInput, PredictionOutput
 from app.logger import logger
 from app.services import analyze_text
 
+from app.auth import hash_password
+from app.database import SessionLocal
+from app.models import User
+from app.schemas import UserCreate
+
+from app.auth import (
+    verify_password,
+    create_access_token,
+    verify_token
+)
+
+from app.schemas import UserLogin
+
+
 router = APIRouter()
+security = HTTPBearer()
+
+def get_current_user(credentials=Depends(security)):
+    token = credentials.credentials
+    email = verify_token(token)
+    if not email: 
+        
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
+        
 
 @router.get("/")
 def health():
     return {"status": "ok"}
 
 @router.post("/predict", response_model=PredictionOutput)
-def predict(request: TextInput):
+def predict(
+    request: TextInput,
+    current_user=Depends(get_current_user)
+    ):
     try:
         text = request.text
 
@@ -18,7 +49,10 @@ def predict(request: TextInput):
             
             raise HTTPException(status_code=400, detail="Text cannot be empty")
         
-        result = analyze_text(text)
+        result = analyze_text(
+            text,
+            current_user
+        )
 
         return {
             "success": True,
@@ -73,3 +107,87 @@ def predict(request: TextInput):
     #    status_code=500,
     #    detail="Internal prediction error"
     #)
+    
+@router.post('/register')
+def register(user: UserCreate):
+    
+    db = SessionLocal()
+    
+    existing_user = (
+        db.query(User)
+        .filter(User.email == user.email)
+        .first()
+    )
+    
+    if existing_user:
+        db.close()
+        
+        raise HTTPException(
+            status_code=400,
+            detail="Email already registered"
+        )
+        
+    new_user = User(
+        username=user.username,
+        email=user.email,
+        hashed_password=hash_password(
+            user.password
+        )
+    )
+    
+    db.add(new_user)
+    
+    db.commit()
+    
+    db.close()
+    
+    return {
+        "message": "User registered successfully"
+    }
+    
+@router.post("/login")
+def login(user: UserLogin):
+    
+    db = SessionLocal()
+    
+    existing_user = (
+        db.query(User)
+        .filter(User.email == user.email)
+        .first()
+    )
+    
+    if not existing_user:
+        db.close()
+        
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+        
+    valid_password = verify_password(
+        user.password,
+        existing_user.hashed_password
+    )
+    
+    if not valid_password:
+
+        db.close()
+
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    access_token = create_access_token(
+        data={
+            "sub": existing_user.email
+        }
+    )
+
+    db.close()
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+    

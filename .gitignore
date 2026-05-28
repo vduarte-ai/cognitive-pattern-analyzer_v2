@@ -19,3 +19,7 @@ ai_env/
 .DS_Store
 
 *.log
+
+#db
+thoughts.db
+data/history.json
