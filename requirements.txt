@@ -3,9 +3,11 @@ uvicorn
 streamlit
 sentence-transformers
 scikit-learn
-torch
-numpy
 pandas
-requests
-pydantic
+numpy
 joblib
+sqlalchemy
+plotly
+passlib[bcrypt]
+python-jose
+bcrypt==4.0.1
