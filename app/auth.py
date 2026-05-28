@@ -48,7 +48,7 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 
-def verify_toke(token: str):
+def verify_token(token: str):
     
     try: 
         payload = jwt.decode(
