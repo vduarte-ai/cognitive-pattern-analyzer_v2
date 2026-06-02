@@ -4,47 +4,11 @@ import json
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
-from app.database import SessionLocal
-from app.models import Thought
+from database import SessionLocal
+from models import Thought
+import time
 
-## Login ##
-
-if "token" not in st.session_state:
-    st.session_state.token = None
-    
-st.subheader("🔐 Login")
-
-email = st.text_input("Email")
-
-password = st.text_input(
-    "Password",
-    type="password"
-)
-
-if st.button("Login"):
-    response = requests.post(
-        "https://cognitive-pattern-analyzer-v2.onrender.com/login",
-        json={
-            "email": email,
-            "password": password
-        }
-    )
-    
-    result = response.json()
-
-    if response.status_code == 200:
-
-        st.session_state.token = result["access_token"]
-
-        st.success("Logged in successfully")
-
-    else:
-
-        st.error("Login failed")
-        
-    
-
-## Init ##
+# Init ##
 st.set_page_config(page_title="Cognitive Analyzer", page_icon="🧠")
 
 st.markdown("""
@@ -73,6 +37,129 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+
+## Login ##
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+    
+if "token" not in st.session_state:
+    st.session_state.token = None
+    
+auth_mode = st.radio(
+    "Authentication",
+    ["Login", "Register"],
+    horizontal=True
+)
+
+        
+if  st.session_state.logged_in:
+    col1, col2 = st.columns([4,1])
+
+    with col2:
+        if st.button("Logout"):
+
+            st.session_state.logged_in = False
+            st.session_state.token = None
+
+            if "email" in st.session_state:
+                del st.session_state["email"]
+
+            st.rerun()
+   
+if  not st.session_state.logged_in: 
+    if auth_mode == "Login":    
+        # Login UI
+        st.subheader("🔐 Login")
+
+        email = st.text_input("Email")
+
+        password = st.text_input(
+           "Password",
+           type="password"
+        )
+
+        if st.button("Login"):
+            response = requests.post(
+                "https://cognitive-pattern-analyzer-v2.onrender.com/login",
+                json={
+                    "email": email,
+                    "password": password
+                }
+            )
+    
+            result = response.json()
+
+            if response.status_code == 200:
+
+                result = response.json()
+
+                st.session_state.logged_in = True
+                st.session_state.token = result["access_token"]
+                st.session_state.email = email
+
+                st.success("Login successful")
+                st.rerun()
+            
+            else:
+
+                st.error("Invalid credentials")
+    
+    elif auth_mode == "Register":
+        st.subheader("📝 Create Account") 
+        
+        register_username = st.text_input(
+             "Username",
+              key="register_username"   
+        )
+        
+        register_email = st.text_input(
+            "Email",
+            key="register_email"
+        )
+
+        register_password = st.text_input(
+            "Password",
+            type="password",
+            key="register_password"
+        )
+
+        if st.button("Create Account"):
+            start = time.time()
+            response = requests.post(
+                "https://cognitive-pattern-analyzer-v2.onrender.com/register",
+                json={
+                    "username": register_username,
+                    "email": register_email,
+                    "password": register_password
+                }
+            )
+            
+            
+
+            print("Register took:", time.time() - start)
+
+            if response.status_code == 200:
+
+                st.success(
+                    "Account created successfully. Please login."
+                )
+
+            else:
+
+                st.error(
+                    f"Registration failed: {response.text}"
+                )
+                
+    if not st.session_state.logged_in:         
+        st.warning("Please login to continue.")
+        st.stop()
+    
+    
+
+       
+    
+
+#
 st.title("🧠 Cognitive Pattern Analyzer")
 st.caption(
     "Analyze thought patterns, emotional distortions, and cognitive reframing."
@@ -165,7 +252,7 @@ try:
     
     history = (
         db.query(Thought)
-        .filter(Thought.user_email == email)
+        .filter(Thought.user_email == st.session_state.email)
         .order_by(Thought.id.desc())
         .limit(5)
         .all()
