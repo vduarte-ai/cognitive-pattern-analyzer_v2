@@ -191,6 +191,10 @@ if st.button("Analyze"):
                             },
                 )
 
+                st.write("STATUS:", response.status_code)
+                st.write("RESPONSE:")
+                st.code(response.text)
+
                 result = response.json()
 
                 if response.status_code == 200 and result["success"]:
