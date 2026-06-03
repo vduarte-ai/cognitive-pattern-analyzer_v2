@@ -120,23 +120,34 @@ def load_models():
     global classifier
     global label_encoder
 
+    logger.info("STARTING MODEL LOAD")
+
     if embedding_model is None:
         logger.info("Loading embedding model...")
         embedding_model = joblib.load("model/embedding_model.pkl")
+        logger.info("Embedding model loaded")
 
     if classifier is None:
         logger.info("Loading classifier...")
         classifier = joblib.load("model/classifier.pkl")
+        logger.info("Classifier loaded")
 
     if label_encoder is None:
         logger.info("Loading label encoder...")
         label_encoder = joblib.load("model/label_encoder.pkl")
+        logger.info("Label encoder loaded")
+
+    logger.info("ALL MODELS LOADED")
+    
 
 def analyze_text(
         text: str,
         current_user: str
     ):
+    logger.info("ANALYZE STARTED")
+    
     load_models()
+    logger.info("MODELS READY")
 
     embedding = embedding_model.encode([text])
 
